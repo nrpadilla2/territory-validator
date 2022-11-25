@@ -1,0 +1,3 @@
+export const LOAD_SERVICES = 'LOAD_SERVICES';
+export const UPDATE_SERVICE = 'UPDATE_SERVICE';
+export const SAVE_SERVICES = 'SAVE_SERVICES';
