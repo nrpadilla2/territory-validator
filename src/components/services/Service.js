@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import Modal from 'react-bootstrap/Modal';
+import { Button, Form, Modal, Row } from 'react-bootstrap';
 
 const Service = ({ service, handleChangeService }) => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [apiKey, setApiKey] = useState('');
 
   const handleConfigure = () => {
     setModalOpen(true);
@@ -14,10 +13,12 @@ const Service = ({ service, handleChangeService }) => {
     setModalOpen(false);
   };
 
-  const handleModalSubmit = () => {
+  const handleModalSubmit = (event) => {
+    event.preventDefault();
+    setModalOpen(false);
     handleChangeService({
       ...service,
-      apiKey: apiKey,
+      apiKey: event.target.apiKey.value,
       isEnabled: true,
     });
   };
@@ -27,10 +28,6 @@ const Service = ({ service, handleChangeService }) => {
       ...service,
       isEnabled: true,
     });
-  };
-
-  const handleApiKeyChange = ({ target }) => {
-    setApiKey(target.value);
   };
 
   const handleRemove = () => {
@@ -56,31 +53,43 @@ const Service = ({ service, handleChangeService }) => {
           </div>
         )}
         {service.isEnabled ? (
-          <button className='btn btn-primary' onClick={() => handleRemove()}>
+          <Button variant='primary' onClick={handleRemove}>
             Remove
-          </button>
+          </Button>
         ) : service.requiresApiKey ? (
           <>
             <div className='text-danger'>* Requires API Key</div>
-            <button className='btn btn-primary' onClick={() => handleConfigure()}>
+            <Button variant='primary' onClick={handleConfigure}>
               Configure
-            </button>
+            </Button>
           </>
         ) : (
-          <button className='btn btn-primary' onClick={() => handleBasicServiceAdd()}>
+          <Button variant='primary' onClick={handleBasicServiceAdd}>
             Add
-          </button>
+          </Button>
         )}
       </div>
       {modalOpen && (
         <Modal show={modalOpen}>
           <Modal.Body>
-            <p>Please enter the API key to use with {service.name}</p>
-            <input type='text' onChange={handleApiKeyChange} value={apiKey} />
+            <Row>
+              <Form onSubmit={handleModalSubmit}>
+                <Form.Group controlId='apiKey'>
+                  <Form.Label>Please enter the API key to use with {service.name}</Form.Label>
+                  <Form.Control type='text' name='apiKey' placeholder='API Key' required />
+                </Form.Group>
+                <Form.Group>
+                  <Button variant='primary' type='submit'>
+                    Add
+                  </Button>
+                </Form.Group>
+              </Form>
+            </Row>
           </Modal.Body>
           <Modal.Footer>
-            <button onClick={handleCloseModal}>Cancel</button>
-            <button onClick={handleModalSubmit}>Add</button>
+            <Button variant='Danger' onClick={handleCloseModal}>
+              Cancel
+            </Button>
           </Modal.Footer>
         </Modal>
       )}

@@ -6,6 +6,9 @@ export default function servicesReducer(services = [], action) {
     case types.UPDATE_SERVICE: {
       const filteredServices = services.filter((s) => s.id != action.service.id);
       const updatedServices = [...filteredServices, action.service];
+      updatedServices.sort((a, b) => {
+        return a.id - b.id;
+      });
 
       storageUtils.saveServices(updatedServices);
 
