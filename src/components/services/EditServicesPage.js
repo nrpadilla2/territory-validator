@@ -1,90 +1,139 @@
-import { chunk } from 'lodash';
+import { faUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
-import { Button, CardGroup, Row } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Button, Container, Row, Stack, Table } from 'react-bootstrap';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import * as serviceActions from '../../redux/actions/serviceActions';
-import Service from './Service';
-
-const getWindowSize = () => {
-  const { innerWidth: width, innerHeight: height } = window;
-  return {
-    width,
-    height: height * 0.75,
-  };
-};
+import ConfigureServiceModal from './ConfigureServiceModal';
 
 const EditServicesPage = ({ services, actions }) => {
-  const [screenSize, setScreenSize] = useState(getWindowSize());
-  const [numCols, setNumColumns] = useState(1);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [activeService, setActiveService] = useState(null);
 
-  const handleSubmit = (event) => {
+  const handleConfigure = (service) => {
+    setActiveService(service);
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
+  const handleModalSubmit = (event) => {
     event.preventDefault();
-    //this.props.actions.createConfig(this.state.config);
+    setModalOpen(false);
+    actions.updateService({
+      ...activeService,
+      apiKey: event.target.apiKey.value,
+      isEnabled: true,
+    });
+    setActiveService(null);
   };
 
-  const handleOnChange = (service) => {
-    actions.updateService(service);
+  const handleBasicServiceAdd = (service) => {
+    actions.updateService({
+      ...service,
+      isEnabled: true,
+    });
+  };
+  const handleAdd = (service) => {
+    if (service.requiresApiKey) {
+      handleConfigure(service);
+    } else {
+      handleBasicServiceAdd(service);
+    }
   };
 
-  useEffect(() => {
-    const handleResize = () => {
-      setScreenSize(getWindowSize());
-    };
+  const handleRemove = (service) => {
+    actions.updateService({
+      ...service,
+      isEnabled: false,
+      apiKey: null,
+    });
+  };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize');
-  }, []);
-
-  useEffect(() => {
-    let cols = 1;
-    if (screenSize.width > 1200) {
-      cols = 4;
-    } else if (screenSize.width > 992) {
-      cols = 3;
-    } else if (screenSize.width > 768) {
-      cols = 2;
+  const renderButton = (service) => {
+    if (service.isEnabled) {
+      return (
+        <>
+          <Button className='float-right' variant='danger' onClick={() => handleRemove(service)}>
+            Remove
+          </Button>
+        </>
+      );
     }
 
-    setNumColumns(cols);
-  }, [screenSize]);
-
-  const rows = chunk(services, numCols);
+    return (
+      <Stack direction='horizontal' gap={1}>
+        <Button className='float-right' variant='primary' onClick={() => handleAdd(service)}>
+          {service.requiresApiKey ? 'Configure' : 'Add'}
+        </Button>
+      </Stack>
+    );
+  };
 
   return (
-    <>
-      <h1>Configuration</h1>
-      <p>Please select the services you would like to retrieve data from.</p>
-      <div
-        style={{
-          height: screenSize.height,
-          maxHeight: '50%',
-          overflowY: 'auto',
-          overflowX: 'hidden',
-        }}
-      >
-        {services &&
-          rows.map((cols, idx) => (
-            <Row key={`row-${idx}`}>
-              <CardGroup key={`row-${idx}`}>
-                {cols.map((service) => (
-                  // <Col key={`col-${idx}`}>
-                  <Service
-                    key={service.id}
-                    service={service}
-                    handleChangeService={handleOnChange}
-                  />
-                  // </Col>
-                ))}
-              </CardGroup>
-            </Row>
-          ))}
-      </div>
-      <Button className='float-right mt-3' variant='primary' onClick={handleSubmit}>
-        Next
-      </Button>
-    </>
+    <Container>
+      <Row>
+        <h4>Configure Services</h4>
+        <p>Please select which service should be searched.</p>
+      </Row>
+      <Row className='service-table'>
+        <Table responsive>
+          <thead>
+            <tr>
+              <td>#</td>
+              <td>Service Name</td>
+              <td>Data Available</td>
+              <td>Option</td>
+            </tr>
+          </thead>
+          <tbody>
+            {services &&
+              services.map((service) => (
+                <tr key={service.id}>
+                  <td>{service.id}</td>
+                  <td>
+                    {service.name}
+                    <Link to={service.url} className='mx-2' target='_blank'>
+                      <FontAwesomeIcon icon={faUpRightFromSquare} />
+                    </Link>
+                    {service.requiresApiKey && <div className='text-danger'>Requires API Key</div>}
+                  </td>
+                  <td>
+                    <ul>
+                      {service.parsedData && service.parsedData.map((p) => <li key={p}>{p}</li>)}
+                    </ul>
+                  </td>
+                  <td>{renderButton(service)}</td>
+                </tr>
+              ))}
+          </tbody>
+        </Table>
+      </Row>
+      <Row className='mt-3'>
+        <Stack direction='horizontal' gap={3}>
+          <Link to='/request' className='w-100'>
+            Don&#39;t see a service? Request it.
+          </Link>
+          <div className='vr' />
+          <Button variant='success'>Next</Button>
+        </Stack>
+      </Row>
+      <Row>
+        {modalOpen && (
+          <ConfigureServiceModal
+            service={activeService}
+            isOpen={modalOpen}
+            handleSave={handleModalSubmit}
+            handleClose={handleCloseModal}
+          />
+        )}
+      </Row>
+    </Container>
   );
 };
 

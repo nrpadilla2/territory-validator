@@ -8,7 +8,7 @@ import EditServicesPage from './services/EditServicesPage';
 
 function App() {
   return (
-    <Container>
+    <Container fluid='md'>
       <Routes>
         <Route exact path='/' element={<HomePage />} />
         <Route path='/about' element={<AboutPage />} />
