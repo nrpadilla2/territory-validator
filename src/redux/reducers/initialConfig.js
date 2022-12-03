@@ -1,10 +1,7 @@
-const NAME = 'Name';
-const HOMESTEAD = 'Is Homestead';
-const STREET_ADDRESS = 'Street Address';
-const POSTAL_CODE = 'Postal Code';
-const GEO_LOCATION = 'Geo Location';
+import { HOMESTEAD, NAME, PHONE, POSTAL_CODE, STREET_ADDRESS } from '../../shared/constants';
 
 export default {
+  priorities: [],
   services: [
     {
       id: 1,
@@ -19,7 +16,7 @@ export default {
       id: 2,
       name: 'Melissa.com',
       url: 'https://melissa.com',
-      parsedData: [NAME, STREET_ADDRESS, POSTAL_CODE, GEO_LOCATION],
+      parsedData: [NAME, STREET_ADDRESS, POSTAL_CODE, PHONE],
       requiresApiKey: true,
       apiKey: '',
       isEnabled: false,
@@ -28,7 +25,7 @@ export default {
       id: 3,
       name: 'a-third-tech.com',
       url: '#',
-      parsedData: [NAME, STREET_ADDRESS, POSTAL_CODE, GEO_LOCATION],
+      parsedData: [NAME, STREET_ADDRESS, POSTAL_CODE, PHONE],
       requiresApiKey: true,
       apiKey: '',
       isEnabled: false,
@@ -46,7 +43,7 @@ export default {
       id: 5,
       name: 'Melissa.com',
       url: 'https://melissa.com',
-      parsedData: [NAME, STREET_ADDRESS, POSTAL_CODE, GEO_LOCATION],
+      parsedData: [NAME, STREET_ADDRESS, POSTAL_CODE, PHONE],
       requiresApiKey: true,
       apiKey: '',
       isEnabled: false,
@@ -55,7 +52,7 @@ export default {
       id: 6,
       name: 'a-third-tech.com',
       url: '#',
-      parsedData: [NAME, STREET_ADDRESS, POSTAL_CODE, GEO_LOCATION],
+      parsedData: [NAME, STREET_ADDRESS, POSTAL_CODE, PHONE],
       requiresApiKey: true,
       apiKey: '',
       isEnabled: false,
@@ -73,7 +70,7 @@ export default {
       id: 8,
       name: 'Melissa.com',
       url: 'https://melissa.com',
-      parsedData: [NAME, STREET_ADDRESS, POSTAL_CODE, GEO_LOCATION],
+      parsedData: [NAME, STREET_ADDRESS, POSTAL_CODE, PHONE],
       requiresApiKey: true,
       apiKey: '',
       isEnabled: false,
@@ -82,7 +79,7 @@ export default {
       id: 9,
       name: 'a-third-tech.com',
       url: '#',
-      parsedData: [NAME, STREET_ADDRESS, POSTAL_CODE, GEO_LOCATION],
+      parsedData: [NAME, STREET_ADDRESS, POSTAL_CODE, PHONE],
       requiresApiKey: true,
       apiKey: '',
       isEnabled: false,

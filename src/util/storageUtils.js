@@ -1,4 +1,4 @@
-const SERVICES_KEY = 'services';
+import { SERVICES_KEY } from '../shared/constants';
 
 export function loadConfig() {
   const services = localStorage.getItem(SERVICES_KEY);

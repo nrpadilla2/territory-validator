@@ -120,7 +120,9 @@ const EditServicesPage = ({ services, actions }) => {
             Don&#39;t see a service? Request it.
           </Link>
           <div className='vr' />
-          <Button variant='success'>Next</Button>
+          <Link to='/priorities' className='btn btn-success'>
+            Next
+          </Link>
         </Stack>
       </Row>
       <Row>
